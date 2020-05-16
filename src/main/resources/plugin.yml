@@ -4,3 +4,8 @@ author: inventivetalent
 version: ${project.version}
 
 depend: [ProtocolLib]
+
+permissions:
+  chunkratelimit.bypass:
+    description: "Bypass the chunk rate limit"
+    default: false

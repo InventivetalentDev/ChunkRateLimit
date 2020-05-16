@@ -40,13 +40,16 @@ public class ChunkRateLimitPlugin extends JavaPlugin {
 			public void onPacketSending(PacketEvent event) {
 				chunkCounter++;
 				if (chunkCounter > 2) {
-					DelayedChunk chunk = new DelayedChunk(event.getPlayer(), event.getPacket());
-					String chunkId = chunk.getId();
-					if (!processing.contains(chunkId)) {
-						delayedChunks.add(chunk);
-						event.setCancelled(true);
-					} else {
-						processing.remove(chunkId);
+					Player player = event.getPlayer();
+					if (!player.hasPermission("chunkratelimit.bypass")) {
+						DelayedChunk chunk = new DelayedChunk(player, event.getPacket());
+						String chunkId = chunk.getId();
+						if (!processing.contains(chunkId)) {
+							delayedChunks.add(chunk);
+							event.setCancelled(true);
+						} else {
+							processing.remove(chunkId);
+						}
 					}
 				}
 			}
