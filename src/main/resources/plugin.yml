@@ -1,0 +1,6 @@
+name: ChunkRateLimit
+main: org.inventivetalent.chunkratelimit.ChunkRateLimitPlugin
+author: inventivetalent
+version: ${project.version}
+
+depend: [ProtocolLib]

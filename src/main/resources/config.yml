@@ -1,0 +1,4 @@
+# Chunk-sending interval (ticks)
+sendInterval: 10
+# How many chunks to send at once
+sendEach: 2
