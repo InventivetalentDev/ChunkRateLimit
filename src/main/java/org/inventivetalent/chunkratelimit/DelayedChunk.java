@@ -24,8 +24,12 @@ public class DelayedChunk {
 	}
 
 	public int distance() {
-		Chunk chunk = getPlayer().getLocation().getChunk();
-		return ((this.x - chunk.getX()) * (this.x - chunk.getX())) + ((this.z - chunk.getZ()) * (this.z - chunk.getZ()));
+		Player player = getPlayer();
+		if (player != null) {
+			Chunk chunk = player.getLocation().getChunk();
+			return ((this.x - chunk.getX()) * (this.x - chunk.getX())) + ((this.z - chunk.getZ()) * (this.z - chunk.getZ()));
+		}
+		return 0;
 	}
 
 	public Player getPlayer() {

@@ -6,6 +6,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.lang.reflect.InvocationTargetException;
@@ -59,11 +60,19 @@ public class ChunkRateLimitPlugin extends JavaPlugin {
 					if (delayedChunks.size() <= 0) { return; }
 					DelayedChunk chunk = delayedChunks.pop();
 					if (chunk != null) {
-						processing.add(chunk.getId());
-						try {
-							protocolManager.sendServerPacket(chunk.getPlayer(), chunk.packet);
-						} catch (InvocationTargetException e) {
-							e.printStackTrace();
+						int j = 0;
+						Player chunkPlayer = chunk.getPlayer();
+						while (j++ < 50 && (chunkPlayer == null || !chunkPlayer.isOnline()) && delayedChunks.size() > 0) {
+							chunk = delayedChunks.pop();
+							chunkPlayer = chunk.getPlayer();
+						}
+						if (chunkPlayer != null && chunkPlayer.isOnline()) {
+							processing.add(chunk.getId());
+							try {
+								protocolManager.sendServerPacket(chunkPlayer, chunk.packet);
+							} catch (InvocationTargetException e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}
