@@ -4,3 +4,6 @@ sendInterval: 10
 sendEach: 2
 # Store chunk queue per-player instead of using one for all players
 perPlayerQueue: false
+
+# Debug
+debug: false

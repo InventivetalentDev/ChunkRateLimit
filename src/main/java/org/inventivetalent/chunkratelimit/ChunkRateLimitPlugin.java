@@ -27,6 +27,7 @@ public class ChunkRateLimitPlugin extends JavaPlugin implements Listener {
 	private int     sendInterval   = 10;
 	private int     sendEach       = 1;
 	private boolean perPlayerQueue = false;
+	private boolean debug          = false;
 
 	@Override
 	public void onEnable() {
@@ -35,6 +36,7 @@ public class ChunkRateLimitPlugin extends JavaPlugin implements Listener {
 		sendInterval = getConfig().getInt("sendInterval", sendInterval);
 		sendEach = getConfig().getInt("sendEach", sendEach);
 		perPlayerQueue = getConfig().getBoolean("perPlayerQueue", perPlayerQueue);
+		debug = getConfig().getBoolean("debug", debug);
 
 		Bukkit.getPluginManager().registerEvents(this, this);
 
@@ -72,11 +74,11 @@ public class ChunkRateLimitPlugin extends JavaPlugin implements Listener {
 				for (int i = 0; i < sendEach; i++) {
 					DelayedChunk chunk = null;
 					Player chunkPlayer = null;
-					if (perPlayerQueue){
-						if (perPlayerDelayedChunks.isEmpty()) return;
+					if (perPlayerQueue) {
+						if (perPlayerDelayedChunks.isEmpty()) { return; }
 						for (UUID uuid : perPlayerDelayedChunks.keySet()) {
 							Deque<DelayedChunk> playerQueue = perPlayerDelayedChunks.get(uuid);
-							if(playerQueue.isEmpty())continue;
+							if (playerQueue.isEmpty()) { continue; }
 							if (chunkCounter > 0) { chunkCounter--; }
 							chunk = playerQueue.pop();
 							chunkPlayer = chunk.getPlayer();
@@ -95,6 +97,22 @@ public class ChunkRateLimitPlugin extends JavaPlugin implements Listener {
 				}
 			}
 		}, sendInterval, sendInterval);
+
+		if (debug) {
+			Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
+				@Override
+				public void run() {
+					if (perPlayerQueue) {
+						getLogger().info("Chunk Queue Sizes: (" + perPlayerDelayedChunks.size() + ")");
+						for (UUID uuid : perPlayerDelayedChunks.keySet()) {
+							getLogger().info("  " + uuid + ": " + perPlayerDelayedChunks.get(uuid).size());
+						}
+					} else {
+						getLogger().info("Chunk Queue Size: " + delayedChunks.size());
+					}
+				}
+			}, 20, 30 * 20);
+		}
 	}
 
 	@EventHandler
