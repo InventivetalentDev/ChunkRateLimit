@@ -2,3 +2,5 @@
 sendInterval: 10
 # How many chunks to send at once
 sendEach: 2
+# Store chunk queue per-player instead of using one for all players
+perPlayerQueue: false
